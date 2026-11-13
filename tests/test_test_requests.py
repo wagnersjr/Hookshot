@@ -103,6 +103,9 @@ def test_claims():
     check(BOB in state([bob, rel_other], 6)["claims"], "release is the claimer's")
     rel = ev("bob", 5, "%s T-7KQ2 release" % T)
     check(not state([bob, rel], 6)["claims"], "release clears the claim")
+    for typo in ("until 2026-13-12 16:40Z", "until 2026-11-12 99:99Z"):   # (a date strptime refuses: the default)
+        t = state([ev("bob", 1, "%s T-7KQ2 claim: %s" % (T, typo))], 2)
+        check(t["claims"].get(BOB) == at(1 + tr.DEFAULT_TTL), "a mistyped until (%s) is the default" % typo)
 
 
 def test_done_cancel():

@@ -90,7 +90,10 @@ def until_time(text):
     m = UNTIL.search(text)
     if not m:
         return None
-    return calendar.timegm(time.strptime(m.group(1) + " " + m.group(2), "%Y-%m-%d %H:%M"))
+    try:
+        return calendar.timegm(time.strptime(m.group(1) + " " + m.group(2), "%Y-%m-%d %H:%M"))
+    except ValueError:  # a date that is not one (month 13, 99:99): the claim gets the default, as with none
+        return None
 
 
 def expire(t, ts):
